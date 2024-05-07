@@ -28,8 +28,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	etcdiov1alpha1 "github.com/yanghao89/etcd-operator/api/v1alpha1"
-	"github.com/yanghao89/etcd-operator/internal/operator"
+	"etcd-operator/pkg/operator"
+
+	etcdiov1alpha1 "etcd-operator/api/v1alpha1"
 )
 
 // EtcdClusterReconciler reconciles a EtcdCluster object
@@ -95,7 +96,7 @@ func (r *EtcdClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 func (r *EtcdClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&etcdiov1alpha1.EtcdCluster{}).
-		For(&corev1.Service{}).
-		For(&appsv1.StatefulSet{}).
+		Owns(&corev1.Service{}).
+		Owns(&appsv1.StatefulSet{}).
 		Complete(r)
 }

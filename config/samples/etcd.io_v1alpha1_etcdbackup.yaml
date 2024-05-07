@@ -1,0 +1,15 @@
+apiVersion: etcd.io.etcd.io/v1alpha1
+kind: EtcdBackup
+metadata:
+  name: etcdbackup
+spec:
+  etcdUrl: "http://etcd-demo-0.etcd-demo.default.svc.cluster.local:2379"
+  storageType: s3
+  s3:
+    path: "foo-bucket/snapshot.db"
+    endpoint: "play.min.io"
+    secret: "minio-access-secret"
+  oss:
+    path: "foo-bucket/snapshot.db"
+    endpoint: "oss-cn-hangzhou.aliyuncs.com"
+    secret: "secret"

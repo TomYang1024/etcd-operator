@@ -76,6 +76,8 @@ SHELL = /usr/bin/env bash -o pipefail
 .PHONY: all
 all: build
 
+kubectl create secret generic minio-access-secret --from-literal=MINIO_ACCESS_ID=UfZ9SOuFvXuOz2Dvi7Bu --from-literal=MINIO_ACCESS_KEY=yKCkmNLQSqu0VoI1g5PQS8L0PlmY2sFlRDREOyHE
+
 ##@ General
 
 # The help target prints out all targets with their descriptions organized

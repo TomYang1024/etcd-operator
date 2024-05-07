@@ -7,5 +7,3 @@ spec:
   size: 3
   image: cnych/etcd:v3.4.13
 
-
-#etcdctl --endpoints etcd-demo-0.etcd-demo:2379,etcd-demo-1.etcd-demo:2379,etcd-demo-2.etcd-demo:2379 endpoint status --write-out=table

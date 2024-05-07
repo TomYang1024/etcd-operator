@@ -34,8 +34,9 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	etcdiov1alpha1 "github.com/yanghao89/etcd-operator/api/v1alpha1"
-	"github.com/yanghao89/etcd-operator/internal/controller"
+	"etcd-operator/internal/controller"
+
+	etcdiov1alpha1 "etcd-operator/api/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -57,6 +58,7 @@ func main() {
 	var probeAddr string
 	var secureMetrics bool
 	var enableHTTP2 bool
+	var defaultBackupImage string = "yanghao1148/etcd-operator-backup:v0.0.6"
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
@@ -66,6 +68,8 @@ func main() {
 		"If set the metrics endpoint is served securely")
 	flag.BoolVar(&enableHTTP2, "enable-http2", false,
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
+	flag.StringVar(&defaultBackupImage, "default-backup-image", defaultBackupImage, "The default image to use for the backup job")
+
 	opts := zap.Options{
 		Development: true,
 	}
@@ -121,12 +125,21 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
-
+	// etcd cluster controller
 	if err = (&controller.EtcdClusterReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "EtcdCluster")
+		os.Exit(1)
+	}
+	// backup controller
+	if err = (&controller.EtcdBackupReconciler{
+		Client:      mgr.GetClient(),
+		Scheme:      mgr.GetScheme(),
+		BackupImage: defaultBackupImage,
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "EtcdBackup")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

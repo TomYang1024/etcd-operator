@@ -20,4 +20,13 @@ resources:
   kind: EtcdCluster
   path: github.com/yanghao89/etcd-operator/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: etcd.io
+  group: etcd.io
+  kind: EtcdBackup
+  path: github.com/yanghao89/etcd-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"
